@@ -77,6 +77,8 @@ func Start(project *Project, options *Options) (*Runner, error) {
 		switch backend.Type {
 		case "google":
 			r.providers[bname] = Google(project, backend, options)
+		case "openstack":
+			r.providers[bname] = OpenStack(project, backend, options)
 		case "linode":
 			r.providers[bname] = Linode(project, backend, options)
 		case "lxd":
@@ -829,7 +831,7 @@ func (r *Runner) fetchArtifacts(client *Client, job *Job) error {
 	tarr, tarw := io.Pipe()
 
 	var stderr bytes.Buffer
-	cmd := exec.Command("tar", "xJ")
+	cmd := exec.Command("tar", "xz")
 	cmd.Dir = localDir
 	cmd.Stdin = tarr
 	cmd.Stderr = &stderr
